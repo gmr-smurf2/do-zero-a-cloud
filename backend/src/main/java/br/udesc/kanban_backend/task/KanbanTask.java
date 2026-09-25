@@ -70,14 +70,19 @@ public class KanbanTask {
             List<String> tags,
             BoardColumn column
     ) {
-        // TODO 3: inicialize todos os campos e faça uma cópia defensiva das tags.
-        throw new UnsupportedOperationException("TODO 3: construir tarefa");
+        // Cada tarefa recebe um identificador novo.
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.position = position;
+        this.createdAt = createdAt;
+        this.dueDate = dueDate;
+        this.completed = completed;
+    
+        // Copia a lista para que alterações feitas pelo chamador não mudem a tarefa.
+        this.tags = new ArrayList<>(tags);
+        this.column = column;
     }
-
-    public List<String> getTags() {
-        return List.copyOf(tags);
-    }
-
+    
     public void update(
             String name,
             int position,
@@ -86,7 +91,19 @@ public class KanbanTask {
             List<String> tags,
             BoardColumn column
     ) {
-        // TODO 3: atualize os campos permitidos sem alterar createdAt.
-        throw new UnsupportedOperationException("TODO 3: atualizar tarefa");
+        // Atualiza os campos que podem mudar.
+        this.name = name;
+        this.position = position;
+        this.dueDate = dueDate;
+        this.completed = completed;
+    
+        // Mantém a lista interna e substitui o conteúdo das tags.
+        this.tags.clear();
+        this.tags.addAll(tags);
+    
+        this.column = column;
+    
+        // createdAt não é alterado: representa quando a tarefa foi criada.
     }
+   
 }
