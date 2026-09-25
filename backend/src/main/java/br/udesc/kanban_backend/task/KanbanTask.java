@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import jakarta.validation.constraints.PositiveOrZero;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,12 @@ public class KanbanTask {
     private UUID id;
 
     @Getter
-    // TODO 3a: mapeie o nome como coluna obrigatória com no máximo 120 caracteres.
+    @Column(nullable = false, length = 120)
     private String name;
-
+    
     @Getter
-    // TODO 3a: mapeie a posição na coluna física position, obrigatória e positivo ou zero.
+    @PositiveOrZero
+    @Column(name = "position", nullable = false)
     private int position;
 
     @Getter
