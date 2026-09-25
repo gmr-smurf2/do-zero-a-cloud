@@ -103,37 +103,41 @@ Informe apenas a origem da API, sem `/api/v1`.
 
 ## Semana 2 — Railway
 
-Crie um projeto no Railway e adicione três serviços: **PostgreSQL**, **backend** e **frontend**.
+1. Crie uma conta no [Railway](https://railway.com/) e conecte sua conta do GitHub.
+2. Crie um projeto no Railway.
+3. Adicione um serviço **PostgreSQL** ao projeto. Abra as variáveis do banco, copie o valor de `PGPASSWORD` e guarde-o para configurar o backend.
 
 ### Backend
 
-1. Crie um serviço a partir do seu repositório GitHub.
-2. Configure **Root Directory** como `/backend`.
-3. Configure **Config File Path** como `/backend/railway.toml`.
+1. Adicione um serviço a partir do seu repositório GitHub.
+2. Selecione o repositório deste projeto.
+3. Configure **Root Directory** como `/backend`.
 4. Adicione as variáveis:
 
 ```text
-DB_URL=jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}
-DB_USERNAME=${{Postgres.PGUSER}}
-DB_PASSWORD=${{Postgres.PGPASSWORD}}
+DB_URL=jdbc:postgresql://postgres.railway.internal:5432/railway
+DB_USERNAME=postgres
+DB_PASSWORD=<valor de PGPASSWORD copiado do PostgreSQL>
+PORT=8090
 ```
 
-5. Gere um domínio público para o serviço.
+5. Gere um domínio público para o serviço, configure a porta de destino como `8090` e copie o domínio gerado.
 
 O health check usa `/actuator/health`.
 
 ### Frontend
 
-1. Crie outro serviço a partir do mesmo repositório.
-2. Configure **Root Directory** como `/frontend`.
-3. Configure **Config File Path** como `/frontend/railway.toml`.
-4. Defina a variável:
+1. Adicione outro serviço a partir do mesmo repositório GitHub.
+2. Selecione o mesmo repositório deste projeto.
+3. Configure **Root Directory** como `/frontend`.
+4. Adicione as variáveis:
 
 ```text
-VITE_API_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}
+PORT=3000
+VITE_API_URL=https://<domínio público copiado do backend>
 ```
 
-5. Gere o domínio público do frontend.
+Substitua o exemplo pelo domínio copiado, sem adicionar `/api/v1` ao final. Gere também o domínio público do frontend para acessar a aplicação.
 
 O container lê `VITE_API_URL` quando inicia. Assim, a URL do backend pode mudar sem gerar uma nova imagem do frontend.
 

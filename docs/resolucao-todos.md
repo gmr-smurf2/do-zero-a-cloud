@@ -159,7 +159,7 @@ List<KanbanTask> findByColumn_IdOrderByPositionAsc(UUID columnId);
 
 ### 3c. Construir e atualizar uma tarefa
 
-Em `KanbanTask.java`, substitua os corpos dos métodos construtor e `update`:
+Em `KanbanTask.java`, substitua os corpos dos métodos construtor e `update`. Mantenha o método `getTags()` entre eles: o `TaskService` depende dele para montar a resposta. O trecho completo dessa parte da classe fica assim:
 
 ```java
 public KanbanTask(
@@ -182,6 +182,10 @@ public KanbanTask(
     // Copia a lista para que alterações feitas pelo chamador não mudem a tarefa.
     this.tags = new ArrayList<>(tags);
     this.column = column;
+}
+
+public List<String> getTags() {
+    return List.copyOf(tags);
 }
 
 public void update(
