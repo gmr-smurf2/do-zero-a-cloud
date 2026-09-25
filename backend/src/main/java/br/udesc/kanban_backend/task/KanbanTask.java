@@ -105,5 +105,9 @@ public class KanbanTask {
     
         // createdAt não é alterado: representa quando a tarefa foi criada.
     }
+
+    public List<String> getTags() {
+    return List.copyOf(tags);
+}
    
 }
