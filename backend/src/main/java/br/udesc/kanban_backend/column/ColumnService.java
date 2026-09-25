@@ -8,6 +8,7 @@ import br.udesc.kanban_backend.shared.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,16 +22,37 @@ public class ColumnService {
 
     @Transactional(readOnly = true)
     public List<ColumnResponse> listByBoard(UUID boardId) {
-        // TODO 2: confirme que o quadro existe, consulte o repository em ordem
-        // de posição e converta as entidades para response.
-        throw new UnsupportedOperationException("TODO 2: listar colunas do quadro");
+        // Confirma que o quadro existe. Se não existir, boardService lança 404.
+        boardService.findBoard(boardId);
+    
+        // O repository já devolve as colunas ordenadas pela posição.
+        List<BoardColumn> columns = columnRepository
+                .findByBoard_IdOrderByPositionAsc(boardId);
+        List<ColumnResponse> responses = new ArrayList<>();
+    
+        // Transforma cada entidade em um objeto que pode ser enviado como JSON.
+        for (BoardColumn column : columns) {
+            ColumnResponse response = toResponse(column);
+            responses.add(response);
+        }
+    
+        return responses;
     }
-
+    
     @Transactional
     public ColumnResponse create(ColumnRequest request) {
-        // TODO 2: localize o quadro, remova espaços do nome, construa a coluna
-        // e persista antes de responder.
-        throw new UnsupportedOperationException("TODO 2: criar coluna");
+        // Procura o quadro que receberá a nova coluna.
+        Board board = findBoard(request.boardId());
+    
+        // Remove espaços acidentais antes e depois do nome.
+        String name = request.name().trim();
+    
+        // Cria a entidade e a salva no banco.
+        BoardColumn column = new BoardColumn(name, request.position(), board);
+        BoardColumn savedColumn = columnRepository.save(column);
+    
+        // Retorna os dados da coluna criada.
+        return toResponse(savedColumn);
     }
 
     @Transactional
