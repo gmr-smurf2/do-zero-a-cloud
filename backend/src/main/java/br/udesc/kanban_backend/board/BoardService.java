@@ -6,6 +6,7 @@ import br.udesc.kanban_backend.shared.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,9 +19,17 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<BoardResponse> list() {
-        return boardRepository.findAllByOrderByNameAsc().stream()
-                .map(BoardService::toResponse)
-                .toList();
+        // Busca os quadros já ordenados alfabeticamente pelo repository.
+        List<Board> boards = boardRepository.findAllByOrderByNameAsc();
+        List<BoardResponse> responses = new ArrayList<>();
+    
+        // Converte uma entidade por vez para o formato público da API.
+        for (Board board : boards) {
+            BoardResponse response = toResponse(board);
+            responses.add(response);
+        }
+    
+        return responses;
     }
 
     @Transactional
